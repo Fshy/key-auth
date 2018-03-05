@@ -27,8 +27,13 @@ db.once('open', () => {
   User = mongoose.model('User', userSchema)
 })
 
+// view engine setup
+app.set('views', path.join(__dirname, 'views'))
+app.set('view engine', 'ejs')
+app.use(express.static(path.join(__dirname, 'public')))
+
 app.get('/', (req, res) => {
-  res.send(uuid())
+  res.render('index', {title: process.env.NAME})
 })
 
 // app.get('/auth/generate/:passkey', (req, res) => {
@@ -36,6 +41,13 @@ app.get('/', (req, res) => {
 //     res.send(hash)
 //   })
 // })
+
+app.get('/users', (req, res) => {
+  User.find(function (err, users) {
+    if (err) return console.error(err)
+    res.render('users', {title: process.env.NAME, users: users})
+  })
+})
 
 app.get('/auth/generate/:admin/:username', (req, res) => {
   bcrypt.compare(req.params.admin, process.env.ADMIN_HASH, (err, match) => {
