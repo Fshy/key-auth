@@ -1,0 +1,28 @@
+{
+  "name": "key-auth",
+  "version": "1.0.0",
+  "description": "Simple webserver for authenticating client builds",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Fshy/key-auth.git"
+  },
+  "author": "Fshy <fshy@arc.moe> (https://arc.moe/)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Fshy/key-auth/issues"
+  },
+  "homepage": "https://github.com/Fshy/key-auth#readme",
+  "dependencies": {
+    "bcrypt": "^1.0.3",
+    "dotenv": "^5.0.1",
+    "ejs": "^2.5.7",
+    "express": "^4.16.2",
+    "mongodb": "^3.0.3",
+    "mongoose": "^5.0.8",
+    "uuid": "^3.2.1"
+  }
+}
