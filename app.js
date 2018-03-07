@@ -19,10 +19,8 @@ db.once('open', () => {
   let userSchema = mongoose.Schema({
     name: String,
     key: String,
-    status: {
-      code: Number,
-      message: String
-    }
+    timestamp: Date,
+    flag: Number
   })
   User = mongoose.model('User', userSchema)
 })
@@ -33,7 +31,28 @@ app.set('view engine', 'ejs')
 app.use(express.static(path.join(__dirname, 'public')))
 
 app.get('/', (req, res) => {
-  res.render('index', {title: process.env.NAME})
+  User.find(function (err, users) {
+    if (err) return console.error(err)
+    console.log(users);
+    for (var i = 0; i < users.length; i++) {
+      console.log(users[i].flag);
+      switch (users[i].flag) {
+        case 0:
+          users[i].message = 'Subscription Pending Activation'
+          break
+        case 1:
+          users[i].message = 'Subscription Active'
+          break
+        case 2:
+          users[i].message = 'Subscription Expired/Terminated'
+          break
+        default:
+          users[i].message = 'Unhandled User Flag; Contact Support'
+          break
+      }
+    }
+    res.render('users', {title: process.env.NAME, users: users})
+  })
 })
 
 // app.get('/auth/generate/:passkey', (req, res) => {
@@ -42,23 +61,14 @@ app.get('/', (req, res) => {
 //   })
 // })
 
-app.get('/users', (req, res) => {
-  User.find(function (err, users) {
-    if (err) return console.error(err)
-    res.render('users', {title: process.env.NAME, users: users})
-  })
-})
-
 app.get('/auth/generate/:admin/:username', (req, res) => {
   bcrypt.compare(req.params.admin, process.env.ADMIN_HASH, (err, match) => {
     if (match) {
       let user = new User({
         name: req.params.username,
         key: uuid(),
-        status: {
-          code: 1,
-          message: 'Valid Authenticated User'
-        }
+        timestamp: Date.now(),
+        flag: 0,
       })
       user.save().then(() => {
         res.send(user.key)
@@ -72,9 +82,16 @@ app.get('/auth/generate/:admin/:username', (req, res) => {
 app.get('/auth/check/:key', (req, res) => {
   console.log(`Attempting to authorize key: ${req.params.key}`)
   User.findOne({key:req.params.key}, 'name status', (err, user) => {
-    if (err) return res.status(400).json({code:400})
-    if (user) return res.status(200).json({code:200, user: user.name, status: user.status})
-    res.status(401).json({code:401})
+    if (err) return res.status(400).json({code:400, message: 'Bad Request'})
+    if (user) {
+      switch (user.flag) {
+        case 0:   return res.status(401).json({code:401, user: user.name, key: user.key, timestamp: user.timestamp, flag: user.flag, message: 'Subscription Pending Activation'})
+        case 1:   return res.status(200).json({code:200, user: user.name, key: user.key, timestamp: user.timestamp, flag: user.flag, message: 'Subscription Active'})
+        case 2:   return res.status(401).json({code:401, user: user.name, key: user.key, timestamp: user.timestamp, flag: user.flag, message: 'Subscription Expired/Terminated'})
+        default:  return res.status(401).json({code:401, user: user.name, key: user.key, timestamp: user.timestamp, flag: user.flag, message: 'Unhandled User Flag; Contact Support'})
+      }
+    }
+    res.status(401).json({code:401, message: 'Invalid API Key'})
   })
 })
 

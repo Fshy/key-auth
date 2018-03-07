@@ -5,10 +5,10 @@
     <tr>
       <th>Tools</th>
       <th>Username</th>
+      <th>API Key</th>
+      <th>Created Timestamp</th>
       <th>Flag</th>
       <th>Status</th>
-      <th>Registered</th>
-      <th>Expiry</th>
     </tr>
   </thead>
   <tbody>
@@ -22,10 +22,10 @@
          </div>
        </td>
        <td><%= users[i].name %></td>
-       <td><%= users[i].status.code %></td>
-       <td><%= users[i].status.message %></td>
-       <td></td>
-       <td></td>
+       <td><%= users[i].key %></td>
+       <td><%= users[i].timestamp.toISOString() %></td>
+       <td><%= users[i].flag %></td>
+       <td><%= users[i].message %></td>
      </tr>
     <% } %>
   </tbody>
