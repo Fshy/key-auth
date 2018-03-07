@@ -4,6 +4,7 @@
   <thead class="full-width">
     <tr>
       <th>Tools</th>
+      <th>ID</th>
       <th>Username</th>
       <th>API Key</th>
       <th>Created Timestamp</th>
@@ -21,6 +22,7 @@
           </button>
          </div>
        </td>
+       <td><%= users[i].id %></td>
        <td><%= users[i].name %></td>
        <td><%= users[i].key %></td>
        <td><%= users[i].timestamp.toISOString() %></td>
@@ -32,7 +34,7 @@
   <tfoot class="full-width">
     <tr>
       <th></th>
-      <th colspan="5">
+      <th colspan="6">
         <div class="ui right floated small labeled icon black button">
           <i class="user icon"></i> Add User
         </div>
