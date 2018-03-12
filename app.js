@@ -83,10 +83,10 @@ app.get('/auth/check/:key', (req, res) => {
     if (err) return res.status(400).json({code:400, message: 'Bad Request'})
     if (user) {
       switch (user.flag) {
-        case 0:   return res.status(401).json({code:401, id: user.id, username: user.name, key: user.key, timestamp: user.timestamp, flag: user.flag, message: 'Subscription Pending Activation'})
+        case 0:   return res.status(200).json({code:200, id: user.id, username: user.name, key: user.key, timestamp: user.timestamp, flag: user.flag, message: 'Subscription Pending Activation'})
         case 1:   return res.status(200).json({code:200, id: user.id, username: user.name, key: user.key, timestamp: user.timestamp, flag: user.flag, message: 'Subscription Active'})
-        case 2:   return res.status(401).json({code:401, id: user.id, username: user.name, key: user.key, timestamp: user.timestamp, flag: user.flag, message: 'Subscription Expired/Terminated'})
-        default:  return res.status(401).json({code:401, id: user.id, username: user.name, key: user.key, timestamp: user.timestamp, flag: user.flag, message: 'Unhandled User Flag; Contact Support'})
+        case 2:   return res.status(200).json({code:200, id: user.id, username: user.name, key: user.key, timestamp: user.timestamp, flag: user.flag, message: 'Subscription Expired/Terminated'})
+        default:  return res.status(200).json({code:200, id: user.id, username: user.name, key: user.key, timestamp: user.timestamp, flag: user.flag, message: 'Unhandled User Flag; Contact Support'})
       }
     }
     res.status(401).json({code:401, message: 'Invalid API Key'})
